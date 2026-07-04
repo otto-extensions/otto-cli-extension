@@ -6,6 +6,7 @@ import {
   generateCliArtifacts,
   persistCliMetadata
 } from "./cli-generator.js";
+import { commandService } from "./command-service.js";
 
 export interface CliRescanOptions extends CliGenerationOptions {
   memPalaceRoot?: string;
@@ -35,6 +36,8 @@ export interface ExtensionCommandDefinition<TInput, TOutput> {
   execute(input: TInput): Promise<TOutput>;
 }
 
+const CLI_RESCAN_COMMAND_ID = "otto.cli.rescan";
+
 export async function rescanCli(options: CliRescanOptions): Promise<CliGenerationResult> {
   const result = await generateCliArtifacts(options);
   await persistCliMetadata(result, {
@@ -45,16 +48,20 @@ export async function rescanCli(options: CliRescanOptions): Promise<CliGeneratio
   return result;
 }
 
-export async function executeCliRescanCommand(input: CliRescanCommandInput): Promise<CliGenerationResult> {
-  return rescanCli({
+commandService.register<CliRescanCommandInput, CliGenerationResult>(CLI_RESCAN_COMMAND_ID, async (input) =>
+  rescanCli({
     ...input,
     trigger: input.trigger ?? "manual",
     source: input.source ?? "user"
-  });
+  })
+);
+
+export async function executeCliRescanCommand(input: CliRescanCommandInput): Promise<CliGenerationResult> {
+  return commandService.run<CliRescanCommandInput, CliGenerationResult>(CLI_RESCAN_COMMAND_ID, input);
 }
 
 export const cliRescanCommandDefinition: ExtensionCommandDefinition<CliRescanCommandInput, CliGenerationResult> = {
-  id: "otto.cli.rescan",
+  id: CLI_RESCAN_COMMAND_ID,
   version: "1.0.0",
   description: "Rescan command registry and regenerate unified CLI metadata.",
   metadata: {
