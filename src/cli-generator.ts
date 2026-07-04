@@ -163,33 +163,6 @@ export async function generateCliArtifacts(options: CliGenerationOptions = {}): 
   const { scannedPath, commands, warnings } = await scanCommandDefinitions(options);
   const version = normalizeVersion(options.version);
 
-  const builtins: CliCommandDefinition[] = [
-    {
-      kind: "builtin",
-      name: "help",
-      invocation: "otto help",
-      description: "Render CLI help for generated and builtin commands."
-    },
-    {
-      kind: "builtin",
-      name: "cli version",
-      invocation: "otto cli version",
-      description: "Report the Otto CLI extension version."
-    },
-    {
-      kind: "builtin",
-      name: "cli rescan",
-      invocation: "otto cli rescan",
-      description: "Rescan the command service layer and regenerate CLI metadata."
-    },
-    {
-      kind: "builtin",
-      name: "cli update",
-      invocation: "otto cli update",
-      description: "Expose the CLI update hook without embedding update engine logic."
-    }
-  ];
-
   const generated = commands.map<CliCommandDefinition>((command) => ({
     kind: "generated",
     name: command.id,
@@ -204,7 +177,7 @@ export async function generateCliArtifacts(options: CliGenerationOptions = {}): 
     generatedAt: new Date().toISOString(),
     scannedPath,
     warnings,
-    commands: [...builtins, ...generated]
+    commands: generated
   };
 }
 

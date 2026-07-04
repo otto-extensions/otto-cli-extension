@@ -4,10 +4,9 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { routeCliCommand } from "../src/cli-router.js";
-import { rescanCli } from "../src/cli-rescan.js";
+import { executeCliRescanCommand, rescanCli } from "../src/cli-rescan.js";
 
-test("routeCliCommand manual rescan writes CLI metadata to MemPalace", async () => {
+test("manual and automatic CLI rescans write MemPalace metadata", async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "otto-cli-rescan-"));
 
   try {
@@ -20,12 +19,14 @@ test("routeCliCommand manual rescan writes CLI metadata to MemPalace", async () 
       "utf8"
     );
 
-    const routed = await routeCliCommand(["otto", "cli", "rescan"], {
+    const routed = await executeCliRescanCommand({
       commandServicePath: commandRoot,
-      memPalaceRoot
+      memPalaceRoot,
+      trigger: "manual",
+      source: "user"
     });
 
-    assert.equal(routed.mode, "rescan");
+    assert.equal(routed.commands.filter((command) => command.kind === "generated").length, 1);
 
     const index = JSON.parse(await readFile(path.join(memPalaceRoot, "cli-command-index.json"), "utf8")) as {
       commands: Array<{ name?: string; commandId?: string }>;

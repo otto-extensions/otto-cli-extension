@@ -5,13 +5,14 @@ import os from "node:os";
 import path from "node:path";
 
 import { generateCliArtifacts } from "../src/cli-generator.js";
-import { routeCliCommand } from "../src/cli-router.js";
+import { executeCliRescanCommand } from "../src/cli-rescan.js";
 
-test("generateCliArtifacts indexes command-service files and routeCliCommand forwards them", async () => {
+test("generateCliArtifacts indexes command-service files and command execution persists metadata", async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "otto-cli-basic-"));
 
   try {
     const commandRoot = path.join(tempRoot, "commands");
+    const memPalaceRoot = path.join(tempRoot, "mempalace");
     await mkdir(commandRoot, { recursive: true });
     await writeFile(
       path.join(commandRoot, "hello.json"),
@@ -28,19 +29,13 @@ test("generateCliArtifacts indexes command-service files and routeCliCommand for
     assert.equal(generated.warnings.length, 0);
     assert.ok(generated.commands.some((command) => command.kind === "generated" && command.name === "hello"));
 
-    const routed = await routeCliCommand(["otto", "hello", "--name", "World"], {
-      commandServicePath: commandRoot
+    const rescanned = await executeCliRescanCommand({
+      commandServicePath: commandRoot,
+      memPalaceRoot,
+      trigger: "manual",
+      source: "user"
     });
-
-    assert.equal(routed.mode, "forward");
-    if (routed.mode === "forward") {
-      assert.equal(routed.commandId, "hello");
-      assert.deepEqual(routed.forwardedArgs, ["--name", "World"]);
-    }
-
-    const help = await routeCliCommand(["otto", "help"], { commandServicePath: commandRoot });
-    assert.equal(help.mode, "help");
-    assert.match(help.output, /otto hello/);
+    assert.equal(rescanned.commands.filter((command) => command.kind === "generated").length, 1);
 
     const sourceFile = generated.commands.find((command) => command.kind === "generated" && command.name === "hello")?.sourceFile;
     assert.ok(sourceFile);

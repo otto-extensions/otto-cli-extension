@@ -1,13 +1,12 @@
 {
   "id": "otto.cli.extension",
   "name": "Otto CLI Extension",
-  "version": "0.1.0",
+  "version": "1.7.61",
   "schemaVersion": "1.0.0",
-  "description": "Generates and routes Otto CLI commands from the command service layer.",
+  "description": "Generates unified Otto CLI command metadata from the command service layer.",
   "author": "Otto Systems",
   "entrypoints": {
     "generator": "src/cli-generator.ts",
-    "router": "src/cli-router.ts",
     "rescan": "src/cli-rescan.ts"
   },
   "capabilities": [
