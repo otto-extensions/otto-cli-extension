@@ -1,7 +1,7 @@
 {
   "id": "otto.cli.extension",
   "name": "Otto CLI Extension",
-  "version": "1.7.61",
+  "version": "1.7.62",
   "schemaVersion": "1.0.0",
   "description": "Generates unified Otto CLI command metadata from the command service layer.",
   "author": "Otto Systems",
