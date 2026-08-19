@@ -4,6 +4,8 @@
     { "name": "display current", "invocation": "otto display current <role>", "command": "display.current" },
     { "name": "calendar refresh", "invocation": "otto calendar refresh", "command": "calendar.refresh" },
     { "name": "assignments import", "invocation": "otto assignments import <file>", "command": "assignments.import" },
+    { "name": "eds registry", "invocation": "otto eds registry", "command": "eds.get.registry" },
+    { "name": "eds extension", "invocation": "otto eds extension <name>", "command": "eds.get.extension" },
     { "name": "debug last", "invocation": "otto debug last", "command": "debug.report.last-run" },
     { "name": "debug trace", "invocation": "otto debug trace <command>", "command": "debug.trace.command" },
     { "name": "debug snapshot", "invocation": "otto debug snapshot", "command": "debug.snapshot.system" }

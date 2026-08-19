@@ -63,6 +63,20 @@ const DISPLAY_BUILTIN_COMMANDS: CliCommandDefinition[] = [
   },
   {
     kind: "builtin",
+    name: "eds registry",
+    invocation: "otto eds registry",
+    description: "Return the local extension registry discovered by EDS.",
+    commandId: "eds.get.registry"
+  },
+  {
+    kind: "builtin",
+    name: "eds extension",
+    invocation: "otto eds extension <name>",
+    description: "Return one extension from the local EDS registry.",
+    commandId: "eds.get.extension"
+  },
+  {
+    kind: "builtin",
     name: "debug last",
     invocation: "otto debug last",
     description: "Show the last command-service-routed debug summary.",
