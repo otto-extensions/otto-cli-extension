@@ -30,8 +30,9 @@ test("cli generator warns when no supported command definitions are discovered",
     await mkdir(commandRoot, { recursive: true });
 
     const generated = await generateCliArtifacts({ commandServicePath: commandRoot });
+    const generatedCommands = generated.commands.filter((command) => command.kind === "generated");
 
-    assert.equal(generated.commands.length, 0);
+    assert.equal(generatedCommands.length, 0);
     assert.match(generated.warnings[0] ?? "", /no command definitions/i);
   } finally {
     await rm(tempRoot, { recursive: true, force: true });

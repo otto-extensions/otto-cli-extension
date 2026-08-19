@@ -16,8 +16,9 @@ test("cli rescan command writes MemPalace metadata with manual defaults", async 
     await writeFile(path.join(commandRoot, "status.ts"), 'export const command = { id: "status", description: "Report status." };\n', "utf8");
 
     const rescanned = await executeCliRescanCommand({ commandServicePath: commandRoot, memPalaceRoot });
+    const generatedCommands = rescanned.commands.filter((command) => command.kind === "generated");
 
-    assert.equal(rescanned.commands.length, 1);
+    assert.equal(generatedCommands.length, 1);
     const index = JSON.parse(await readFile(path.join(memPalaceRoot, "cli-command-index.json"), "utf8")) as {
       commands: Array<{ name?: string; commandId?: string }>;
     };

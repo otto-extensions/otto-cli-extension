@@ -37,8 +37,9 @@ test("cli rescan command defaults trigger and source when omitted", async () => 
     await writeFile(path.join(commandRoot, "status.json"), JSON.stringify({ id: "status" }, null, 2), "utf8");
 
     const result = await executeCliRescanCommand({ commandServicePath: commandRoot, memPalaceRoot });
+    const generatedCommands = result.commands.filter((command) => command.kind === "generated");
 
-    assert.equal(result.commands.length, 1);
+    assert.equal(generatedCommands.length, 1);
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }

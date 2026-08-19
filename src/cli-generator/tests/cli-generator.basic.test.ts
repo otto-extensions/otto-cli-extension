@@ -19,17 +19,18 @@ test("cli generator indexes command-service files and preserves versioning", asy
     );
 
     const generated = await generateCliArtifacts({ commandServicePath: commandRoot, version: "9.9.9" });
+    const generatedCommands = generated.commands.filter((command) => command.kind === "generated");
 
     assert.equal(generated.version, "9.9.9");
     assert.equal(generated.warnings.length, 0);
-    assert.equal(generated.commands.length, 1);
-    assert.equal(generated.commands[0]?.name, "hello");
+    assert.equal(generatedCommands.length, 1);
+    assert.equal(generatedCommands[0]?.name, "hello");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
 });
 
 test("cli generator resolves explicit and default command service paths", () => {
-  assert.equal(resolveCommandServicePath("/repo/root", "/custom/commands"), "/custom/commands");
-  assert.match(resolveCommandServicePath("/repo/root"), /otto-command-service\/src\/commands$/);
+  assert.equal(resolveCommandServicePath("/repo/root", "/custom/commands"), path.resolve("/custom/commands"));
+  assert.match(resolveCommandServicePath("/repo/root"), /otto-command-service[\\/]src[\\/]commands$/);
 });

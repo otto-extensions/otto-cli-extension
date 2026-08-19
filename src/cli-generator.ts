@@ -39,6 +39,51 @@ export interface CliMetadataWriteOptions {
   source: RescanSource;
 }
 
+const DISPLAY_BUILTIN_COMMANDS: CliCommandDefinition[] = [
+  {
+    kind: "builtin",
+    name: "display current",
+    invocation: "otto display current <role>",
+    description: "Return current display payload for hallway, sidewall, or backwall.",
+    commandId: "display.current"
+  },
+  {
+    kind: "builtin",
+    name: "calendar refresh",
+    invocation: "otto calendar refresh",
+    description: "Refresh normalized calendar content for displays.",
+    commandId: "calendar.refresh"
+  },
+  {
+    kind: "builtin",
+    name: "assignments import",
+    invocation: "otto assignments import <file>",
+    description: "Import assignments from FACTS CSV and normalize output.",
+    commandId: "assignments.import"
+  },
+  {
+    kind: "builtin",
+    name: "debug last",
+    invocation: "otto debug last",
+    description: "Show the last command-service-routed debug summary.",
+    commandId: "debug.report.last-run"
+  },
+  {
+    kind: "builtin",
+    name: "debug trace",
+    invocation: "otto debug trace <command>",
+    description: "Write a debug trace event for a command path.",
+    commandId: "debug.trace.command"
+  },
+  {
+    kind: "builtin",
+    name: "debug snapshot",
+    invocation: "otto debug snapshot",
+    description: "Capture a runtime snapshot for diagnostics.",
+    commandId: "debug.snapshot.system"
+  }
+];
+
 const SUPPORTED_EXTENSIONS = new Set([".json", ".ts", ".js", ".mjs", ".cjs", ".rs"]);
 
 function normalizeVersion(version?: string): string {
@@ -177,7 +222,7 @@ export async function generateCliArtifacts(options: CliGenerationOptions = {}): 
     generatedAt: new Date().toISOString(),
     scannedPath,
     warnings,
-    commands: generated
+    commands: [...DISPLAY_BUILTIN_COMMANDS, ...generated]
   };
 }
 

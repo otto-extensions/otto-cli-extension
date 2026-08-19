@@ -33,11 +33,18 @@ test("cli rescan surfaces malformed MemPalace history as a parse failure", async
 });
 
 test("cli rescan command reports a missing command-service path as a warning", async () => {
-  const result = await executeCliRescanCommand({
-    commandServicePath: path.join(os.tmpdir(), "missing-cli-commands"),
-    memPalaceRoot: path.join(os.tmpdir(), "missing-cli-mempalace")
-  });
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "otto-cli-missing-path-"));
 
-  assert.equal(result.commands.length, 0);
+  try {
+  const result = await executeCliRescanCommand({
+    commandServicePath: path.join(tempRoot, "missing-cli-commands"),
+    memPalaceRoot: path.join(tempRoot, "missing-cli-mempalace")
+  });
+  const generatedCommands = result.commands.filter((command) => command.kind === "generated");
+
+  assert.equal(generatedCommands.length, 0);
   assert.match(result.warnings[0] ?? "", /path not found/i);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
 });
